@@ -5,11 +5,138 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Invoice Generator</title>
   <style>
-    /* Add your CSS here */
+    body {
+      font-family: 'Impact', sans-serif;
+      background: linear-gradient(45deg, #6a5acd, #ff6347);
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+    }
+    h1 {
+      font-size: 3em;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .invoice-form {
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 30px;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 600px;
+      box-sizing: border-box;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 1.1em;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      outline: none;
+      background-color: #f8f8f8;
+      color: #333;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #ff6347;
+      color: white;
+      font-size: 18px;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+    }
+    button:hover {
+      background-color: #e53d28;
+    }
+    .invoice {
+      margin-top: 30px;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: 10px;
+      color: #fff;
+      display: none;
+      width: 100%;
+      max-width: 600px;
+      box-sizing: border-box;
+    }
+    #downloadImage {
+      display: none;
+      margin-top: 20px;
+      background-color: #4caf50;
+      padding: 15px 30px;
+      border-radius: 8px;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      width: 100%;
+    }
+    #loading {
+      display: none;
+      color: #ff6347;
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    /* Media Queries for Responsiveness */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2em;
+      }
+      .invoice-form {
+        padding: 20px;
+      }
+      button {
+        padding: 12px 25px;
+        font-size: 16px;
+      }
+      #downloadImage {
+        padding: 12px 25px;
+        font-size: 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.5em;
+      }
+      .invoice-form {
+        padding: 15px;
+      }
+      input {
+        padding: 12px;
+        font-size: 14px;
+      }
+      button {
+        padding: 12px 20px;
+        font-size: 14px;
+      }
+      #downloadImage {
+        padding: 12px 20px;
+        font-size: 14px;
+      }
+    }
   </style>
+  <link href="https://fonts.googleapis.com/css2?family=Impact&display=swap" rel="stylesheet">
 </head>
 <body>
+
   <h1>Invoice Generator</h1>
+
   <div class="invoice-form">
     <form id="invoiceForm">
       <div class="form-group">
@@ -34,9 +161,8 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script>
-    document.getElementById('invoiceForm').addEventListener('submit', async function (e) {
+    document.getElementById('invoiceForm').addEventListener('submit', function (e) {
       e.preventDefault();
-      console.log("Form submitted!"); // Debugging
 
       // Show loading text
       document.getElementById('loading').style.display = 'block';
@@ -56,7 +182,7 @@
       const currentDate = formatDateAmerican(new Date());
       const currentTime = formatTimeAmerican(new Date());
 
-      // Generate invoice HTML
+      // Generate colorful invoice HTML
       const invoiceHTML = `
         <div class="invoice" id="invoiceContent">
           <h2>Invoice</h2>
@@ -83,11 +209,9 @@
           <p><strong>Remarks:</strong> Paid Successfully</p>
         </div>
       `;
-      console.log(invoiceHTML); // Debugging
 
       // Display the invoice
       document.getElementById('invoiceOutput').innerHTML = invoiceHTML;
-      console.log("Invoice displayed!"); // Debugging
 
       // Hide loading text and show the "Download Image" button
       document.getElementById('loading').style.display = 'none';
@@ -98,20 +222,31 @@
     document.getElementById('downloadImage').addEventListener('click', function () {
       const element = document.getElementById('invoiceOutput');
 
-      html2canvas(element, {
-        scale: 2, // High resolution for better quality
-        logging: false,
-        useCORS: true,
-        allowTaint: false,
-      }).then((canvas) => {
-        const imageUrl = canvas.toDataURL('image/png'); // Image source
-        const link = document.createElement('a');      // Create an anchor tag
-        link.href = imageUrl;                          // Set the href to the image
-        link.download = 'invoice.png';                 // Name the file
-        document.body.appendChild(link);               // Append the link to the body
-        link.click();                                  // Simulate the click to trigger download
-        document.body.removeChild(link);               // Remove the link after download
-      });
+      // Add a small delay to ensure the content is fully rendered
+      setTimeout(() => {
+        html2canvas(element, {
+          scale: 2, // High resolution for better quality
+          logging: true, // Enable logging for debugging
+          useCORS: true, // Enable cross-origin images (if any)
+          allowTaint: false, // Prevent tainting the canvas
+        }).then((canvas) => {
+          console.log("Canvas generated:", canvas); // Debugging
+
+          // Convert the canvas to an image URL
+          const imageUrl = canvas.toDataURL('image/png');
+          console.log("Image URL:", imageUrl); // Debugging
+
+          // Create a temporary link element to trigger the download
+          const link = document.createElement('a');
+          link.href = imageUrl;
+          link.download = 'invoice.png'; // Name the file
+          document.body.appendChild(link); // Append the link to the body
+          link.click(); // Simulate the click to trigger download
+          document.body.removeChild(link); // Remove the link after download
+        }).catch((error) => {
+          console.error("Error generating canvas:", error); // Debugging
+        });
+      }, 500); // 500ms delay
     });
 
     // Function to format the date using U.S. local format (MM/DD/YYYY)
