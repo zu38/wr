@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ultimate Invoice Generator</title>
+  <title>Kasey Cloud Cashout</title>
   <style>
     body {
       font-family: 'Impact', sans-serif;
-      background: linear-gradient(45deg, #6a5acd, #ff6347);
+      background: linear-gradient(45deg, #1a237e, #4a148c);
       margin: 0;
       padding: 20px;
       min-height: 100vh;
@@ -24,6 +24,11 @@
       font-size: 2.5em;
       text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
       margin-bottom: 30px;
+      color: #00bcd4;
+    }
+
+    .player-name-mobile {
+      display: none;
     }
 
     .invoice-form {
@@ -31,6 +36,7 @@
       padding: 25px;
       border-radius: 15px;
       box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      position: relative;
     }
 
     .form-group {
@@ -41,21 +47,22 @@
       display: block;
       margin-bottom: 8px;
       font-size: 1.1em;
-      color: #ffd700;
+      color: #00bcd4;
     }
 
     input {
       width: 100%;
       padding: 12px;
       font-size: 16px;
-      border: 2px solid #4a90e2;
+      border: 2px solid #00bcd4;
       border-radius: 8px;
       background: rgba(255,255,255,0.9);
       color: #333;
+      box-sizing: border-box;
     }
 
     button {
-      background: linear-gradient(45deg, #4CAF50, #45a049);
+      background: linear-gradient(45deg, #00bcd4, #0097a7);
       color: white;
       padding: 15px 30px;
       border: none;
@@ -63,11 +70,12 @@
       cursor: pointer;
       font-size: 18px;
       transition: transform 0.3s ease;
+      width: 100%;
     }
 
     button:hover {
       transform: scale(1.05);
-      box-shadow: 0 0 15px rgba(76,175,80,0.4);
+      box-shadow: 0 0 15px rgba(0,188,212,0.4);
     }
 
     #invoiceOutput {
@@ -83,14 +91,14 @@
     }
 
     .invoice h2 {
-      color: #4CAF50;
-      border-bottom: 2px solid #4CAF50;
+      color: #00bcd4;
+      border-bottom: 2px solid #00bcd4;
       padding-bottom: 10px;
     }
 
     #downloadImage {
       margin-top: 20px;
-      background: linear-gradient(45deg, #2196F3, #1976D2);
+      background: linear-gradient(45deg, #00bcd4, #0097a7);
       display: none;
     }
 
@@ -98,7 +106,7 @@
       display: none;
       text-align: center;
       font-size: 1.2em;
-      color: #FFC107;
+      color: #00bcd4;
       margin: 20px 0;
     }
 
@@ -114,19 +122,43 @@
       .invoice-form {
         padding: 15px;
       }
+
+      .player-name-desktop {
+        display: none;
+      }
+
+      .player-name-mobile {
+        display: block;
+        margin-bottom: 15px;
+      }
+
+      .invoice-form {
+        overflow: visible;
+      }
     }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Impact&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="container">
-    <h1>🎰 Casino Cashout Invoice 🎲</h1>
+    <h1>☁️ Kasey Cloud Cashout</h1>
     
     <div class="invoice-form">
-      <form id="invoiceForm">
+      <!-- Mobile Player Name Input (now properly inside form container) -->
+      <div class="player-name-mobile">
         <div class="form-group">
-          <label for="playerName">🎯 Player Name</label>
-          <input type="text" id="playerName" required>
+          <label for="playerNameMobile">🎯 Player Name</label>
+          <input type="text" id="playerNameMobile" required>
+        </div>
+      </div>
+
+      <form id="invoiceForm">
+        <!-- Desktop Player Name Input -->
+        <div class="player-name-desktop">
+          <div class="form-group">
+            <label for="playerName">🎯 Player Name</label>
+            <input type="text" id="playerName" required>
+          </div>
         </div>
         
         <div class="form-group">
@@ -143,15 +175,23 @@
       </form>
     </div>
 
-    <div id="loading">🎰 Generating Your Invoice...</div>
+    <div id="loading">☁️ Processing Your Cashout...</div>
     
     <div id="invoiceOutput"></div>
-    <button id="downloadImage">📸 Download Invoice Image</button>
+    <button id="downloadImage">📸 Download Receipt</button>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbxIg4Bt0TLvFwa1UD2z6V6eT1pVjYrie7qOXYAQVJllBhswrB_qmP3455Kw2Ei926PD/exec";
+
+    // Sync mobile/desktop player name fields
+    const syncPlayerNames = () => {
+      const desktopName = document.getElementById('playerName');
+      const mobileName = document.getElementById('playerNameMobile');
+      desktopName.addEventListener('input', () => mobileName.value = desktopName.value);
+      mobileName.addEventListener('input', () => desktopName.value = mobileName.value);
+    };
 
     document.getElementById('invoiceForm').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -162,13 +202,13 @@
       
       // Get form values
       const formData = {
-        playerName: document.getElementById('playerName').value,
+        playerName: document.getElementById('playerName').value || document.getElementById('playerNameMobile').value,
         cashoutFrom: document.getElementById('cashoutFrom').value,
         amount: parseFloat(document.getElementById('amount').value)
       };
 
       // Get invoice number
-      let invoiceNumber = 'INV-0000';
+      let invoiceNumber = 'KC-0000';
       try {
         const response = await fetch(API_URL);
         invoiceNumber = await response.text();
@@ -179,19 +219,19 @@
       // Generate invoice HTML
       const invoiceHTML = `
         <div class="invoice">
-          <h2>🎉 Cashout Receipt</h2>
-          <p><strong>🏦 Casino Name:</strong> Vegas Nights 🎰</p>
+          <h2>☁️ Kasey Cloud Receipt</h2>
+          <p><strong>🏢 Service Center:</strong> Cloud Cashout Hub</p>
           <p><strong>📅 Date:</strong> ${new Date().toLocaleDateString()}</p>
           <p><strong>⏰ Time:</strong> ${new Date().toLocaleTimeString()}</p>
-          <p><strong>📜 Invoice No:</strong> ${invoiceNumber}</p>
+          <p><strong>📜 Transaction ID:</strong> ${invoiceNumber}</p>
           <hr>
-          <p><strong>🎮 Player:</strong> ${formData.playerName}</p>
-          <p><strong>💳 Cashout From:</strong> ${formData.cashoutFrom}</p>
+          <p><strong>👤 Player:</strong> ${formData.playerName}</p>
+          <p><strong>💳 Cashout Source:</strong> ${formData.cashoutFrom}</p>
           <p><strong>💵 Amount:</strong> $${formData.amount.toFixed(2)}</p>
           <hr>
-          <p><strong>🎲 Game Type:</strong> Slot Machine</p>
-          <p><strong>✅ Status:</strong> Payment Completed</p>
-          <p><strong>📌 Note:</strong> Thank you for playing!</p>
+          <p><strong>🔐 Security Code:</strong> ${Math.random().toString(36).substr(2, 8).toUpperCase()}</p>
+          <p><strong>✅ Status:</strong> Transaction Verified</p>
+          <p><strong>📌 Note:</strong> Thank you for using Kasey Cloud!</p>
         </div>
       `;
 
@@ -212,11 +252,14 @@
         logging: true
       }).then(canvas => {
         const link = document.createElement('a');
-        link.download = `casino-invoice-${Date.now()}.png`;
+        link.download = `kasey-cloud-receipt-${Date.now()}.png`;
         link.href = canvas.toDataURL();
         link.click();
       });
     });
+
+    // Initialize field synchronization
+    syncPlayerNames();
   </script>
 </body>
 </html>
