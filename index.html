@@ -5,138 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Invoice Generator</title>
   <style>
-    body {
-      font-family: 'Impact', sans-serif;
-      background: linear-gradient(45deg, #6a5acd, #ff6347);
-      margin: 0;
-      padding: 0;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      color: #fff;
-    }
-    h1 {
-      font-size: 3em;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .invoice-form {
-      background-color: rgba(0, 0, 0, 0.6);
-      padding: 30px;
-      border-radius: 10px;
-      width: 100%;
-      max-width: 600px;
-      box-sizing: border-box;
-    }
-    .form-group {
-      margin-bottom: 15px;
-    }
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-size: 1.1em;
-    }
-    input {
-      width: 100%;
-      padding: 12px;
-      font-size: 16px;
-      margin-bottom: 15px;
-      border-radius: 8px;
-      outline: none;
-      background-color: #f8f8f8;
-      color: #333;
-      box-sizing: border-box;
-    }
-    button {
-      background-color: #ff6347;
-      color: white;
-      font-size: 18px;
-      padding: 15px 30px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      width: 100%;
-    }
-    button:hover {
-      background-color: #e53d28;
-    }
-    .invoice {
-      margin-top: 30px;
-      padding: 20px;
-      background: rgba(0, 0, 0, 0.8);
-      border-radius: 10px;
-      color: #fff;
-      display: none;
-      width: 100%;
-      max-width: 600px;
-      box-sizing: border-box;
-    }
-    #downloadImage {
-      display: none;
-      margin-top: 20px;
-      background-color: #4caf50;
-      padding: 15px 30px;
-      border-radius: 8px;
-      color: white;
-      font-size: 18px;
-      cursor: pointer;
-      width: 100%;
-    }
-    #loading {
-      display: none;
-      color: #ff6347;
-      font-size: 1.5em;
-      font-weight: bold;
-      margin-top: 10px;
-    }
-
-    /* Media Queries for Responsiveness */
-    @media (max-width: 768px) {
-      h1 {
-        font-size: 2em;
-      }
-      .invoice-form {
-        padding: 20px;
-      }
-      button {
-        padding: 12px 25px;
-        font-size: 16px;
-      }
-      #downloadImage {
-        padding: 12px 25px;
-        font-size: 16px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      h1 {
-        font-size: 1.5em;
-      }
-      .invoice-form {
-        padding: 15px;
-      }
-      input {
-        padding: 12px;
-        font-size: 14px;
-      }
-      button {
-        padding: 12px 20px;
-        font-size: 14px;
-      }
-      #downloadImage {
-        padding: 12px 20px;
-        font-size: 14px;
-      }
-    }
+    /* Add your CSS here */
   </style>
-  <link href="https://fonts.googleapis.com/css2?family=Impact&display=swap" rel="stylesheet">
 </head>
 <body>
-
   <h1>Invoice Generator</h1>
-
   <div class="invoice-form">
     <form id="invoiceForm">
       <div class="form-group">
@@ -161,7 +34,10 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script>
-    document.getElementById('invoiceForm').addEventListener('submit', function (e) {
+    // Google Apps Script URL
+    const apiUrl = "https://script.google.com/macros/s/AKfycbxIg4Bt0TLvFwa1UD2z6V6eT1pVjYrie7qOXYAQVJllBhswrB_qmP3455Kw2Ei926PD/exec";
+
+    document.getElementById('invoiceForm').addEventListener('submit', async function (e) {
       e.preventDefault();
 
       // Show loading text
@@ -182,6 +58,15 @@
       const currentDate = formatDateAmerican(new Date());
       const currentTime = formatTimeAmerican(new Date());
 
+      // Fetch the next invoice number from Google Apps Script
+      let invoiceNumber = "INV-0001"; // Default fallback
+      try {
+        const response = await fetch(apiUrl);
+        invoiceNumber = await response.text();
+      } catch (error) {
+        console.error("Error fetching invoice number:", error);
+      }
+
       // Generate colorful invoice HTML
       const invoiceHTML = `
         <div class="invoice" id="invoiceContent">
@@ -191,7 +76,7 @@
           <p>Anchorage, Alaska 99504</p>
           <p><strong>Date:</strong> ${currentDate}</p>
           <p><strong>Time:</strong> ${currentTime}</p>
-          <p><strong>Invoice Number:</strong> INV-0001</p>
+          <p><strong>Invoice Number:</strong> ${invoiceNumber}</p>
           <hr>
           <p><strong>Player Name:</strong> ${playerName}</p>
           <p><strong>Cashout From:</strong> ${cashoutFrom}</p>
