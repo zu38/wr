@@ -5,138 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Invoice Generator</title>
   <style>
-    body {
-      font-family: 'Impact', sans-serif;
-      background: linear-gradient(45deg, #6a5acd, #ff6347);
-      margin: 0;
-      padding: 0;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      color: #fff;
-    }
-    h1 {
-      font-size: 3em;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .invoice-form {
-      background-color: rgba(0, 0, 0, 0.6);
-      padding: 30px;
-      border-radius: 10px;
-      width: 100%;
-      max-width: 600px;
-      box-sizing: border-box;
-    }
-    .form-group {
-      margin-bottom: 15px;
-    }
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-size: 1.1em;
-    }
-    input {
-      width: 100%;
-      padding: 12px;
-      font-size: 16px;
-      margin-bottom: 15px;
-      border-radius: 8px;
-      outline: none;
-      background-color: #f8f8f8;
-      color: #333;
-      box-sizing: border-box;
-    }
-    button {
-      background-color: #ff6347;
-      color: white;
-      font-size: 18px;
-      padding: 15px 30px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      width: 100%;
-    }
-    button:hover {
-      background-color: #e53d28;
-    }
-    .invoice {
-      margin-top: 30px;
-      padding: 20px;
-      background: rgba(0, 0, 0, 0.8);
-      border-radius: 10px;
-      color: #fff;
-      display: none;
-      width: 100%;
-      max-width: 600px;
-      box-sizing: border-box;
-    }
-    #downloadImage {
-      display: none;
-      margin-top: 20px;
-      background-color: #4caf50;
-      padding: 15px 30px;
-      border-radius: 8px;
-      color: white;
-      font-size: 18px;
-      cursor: pointer;
-      width: 100%;
-    }
-    #loading {
-      display: none;
-      color: #ff6347;
-      font-size: 1.5em;
-      font-weight: bold;
-      margin-top: 10px;
-    }
-
-    /* Media Queries for Responsiveness */
-    @media (max-width: 768px) {
-      h1 {
-        font-size: 2em;
-      }
-      .invoice-form {
-        padding: 20px;
-      }
-      button {
-        padding: 12px 25px;
-        font-size: 16px;
-      }
-      #downloadImage {
-        padding: 12px 25px;
-        font-size: 16px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      h1 {
-        font-size: 1.5em;
-      }
-      .invoice-form {
-        padding: 15px;
-      }
-      input {
-        padding: 12px;
-        font-size: 14px;
-      }
-      button {
-        padding: 12px 20px;
-        font-size: 14px;
-      }
-      #downloadImage {
-        padding: 12px 20px;
-        font-size: 14px;
-      }
-    }
+    /* Add your CSS here */
   </style>
-  <link href="https://fonts.googleapis.com/css2?family=Impact&display=swap" rel="stylesheet">
 </head>
 <body>
-
   <h1>Invoice Generator</h1>
-
   <div class="invoice-form">
     <form id="invoiceForm">
       <div class="form-group">
@@ -163,6 +36,7 @@
   <script>
     document.getElementById('invoiceForm').addEventListener('submit', async function (e) {
       e.preventDefault();
+      console.log("Form submitted!"); // Debugging
 
       // Show loading text
       document.getElementById('loading').style.display = 'block';
@@ -209,9 +83,11 @@
           <p><strong>Remarks:</strong> Paid Successfully</p>
         </div>
       `;
+      console.log(invoiceHTML); // Debugging
 
       // Display the invoice
       document.getElementById('invoiceOutput').innerHTML = invoiceHTML;
+      console.log("Invoice displayed!"); // Debugging
 
       // Hide loading text and show the "Download Image" button
       document.getElementById('loading').style.display = 'none';
