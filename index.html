@@ -247,9 +247,7 @@
     });
 
     // Add event listener to the "Download Image" button
-    document.getElementById('downloadImage').addEventListener('click', generateImage);
-
-    function generateImage() {
+    document.getElementById('downloadImage').addEventListener('click', function () {
       const element = document.getElementById('invoiceOutput');
 
       html2canvas(element, {
@@ -263,10 +261,10 @@
         link.href = imageUrl;
         link.download = 'invoice.png';  // Set the name of the image file
 
-        // Trigger the download
+        // Force the download to happen
         link.click();
       });
-    }
+    });
 
     // Function to format the date using U.S. local format (MM/DD/YYYY)
     function formatDateAmerican(date) {
