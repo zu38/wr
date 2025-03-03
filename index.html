@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invoice Generator</title>
+  <style>
+    /* General Body Styles */
+    body {
+      font-family: 'Impact', sans-serif;
+      background: linear-gradient(45deg, #6a5acd, #ff6347); /* Beautiful gradient background */
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+    }
+
+    h1 {
+      font-size: 3em;
+      text-align: center;
+      color: #fff;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Form Styling */
+    .invoice-form {
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      font-size: 18px;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 2px solid #ddd;
+      margin-bottom: 15px;
+      outline: none;
+      background-color: #f8f8f8;
+      color: #333;
+    }
+
+    input:focus {
+      border-color: #4caf50;
+    }
+
+    /* Buttons Styling */
+    button {
+      background-color: #ff6347;
+      color: white;
+      font-size: 18px;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #e53d28;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    /* Invoice Output Styling */
+    .invoice {
+      margin-top: 30px;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 600px;
+      color: #fff;
+    }
+
+    .invoice h2 {
+      text-align: center;
+      font-size: 2.5em;
+      color: #4caf50;
+    }
+
+    .invoice p {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    .invoice .total {
+      font-size: 18px;
+      font-weight: bold;
+      text-align: right;
+    }
+
+    /* Download Image Button */
+    #downloadImage {
+      display: none;
+      margin-top: 20px;
+      background-color: #4caf50;
+      padding: 15px 30px;
+      border-radius: 8px;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    #downloadImage:hover {
+      background-color: #388e3c;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    #downloadImage:active {
+      transform: scale(0.98);
+    }
+
+    /* Loading Animation */
+    #loading {
+      display: none;
+      color: #ff6347;
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Impact&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <h1>Invoice Generator</h1>
+
+  <div class="invoice-form">
+    <form id="invoiceForm">
+      <div class="form-group">
+        <label for="playerName">Player Name</label>
+        <input type="text" id="playerName" required>
+      </div>
+      <div class="form-group">
+        <label for="cashoutFrom">Cashout From</label>
+        <input type="text" id="cashoutFrom" required>
+      </div>
+      <div class="form-group">
+        <label for="amount">Amount</label>
+        <input type="number" id="amount" required>
+      </div>
+      <button type="submit">Generate Invoice</button>
+    </form>
+  </div>
+
+  <div id="loading">Generating invoice...</div>
+  <div id="invoiceOutput"></div>
+  <button id="downloadImage">Download Image</button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+  <script>
+    // Replace this URL with your new Google Apps Script URL
+    const apiUrl = "https://script.google.com/macros/s/AKfycbxIg4Bt0TLvFwa1UD2z6V6eT1pVjYrie7qOXYAQVJllBhswrB_qmP3455Kw2Ei926PD/exec"; 
+
+    document.getElementById('invoiceForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      // Show loading text
+      document.getElementById('loading').style.display = 'block';
+      document.getElementById('downloadImage').style.display = 'none';
+
+      // Get form values
+      const playerName = document.getElementById('playerName').value;
+      const cashoutFrom = document.getElementById('cashoutFrom').value;
+      const amount = parseFloat(document.getElementById('amount').value);
+
+      // Set VAT to 0%
+      const vat = 0;
+      const vatAmount = (amount * vat) / 100;
+      const totalAmount = amount + vatAmount;
+
+      // Get current date and time in U.S. locale format (MM/DD/YYYY, HH:MM AM/PM)
+      const currentDate = formatDateAmerican(new Date());
+      const currentTime = formatTimeAmerican(new Date());
+
+      // Fetch the next invoice number from Google Sheets
+      let invoiceNumber = "INV-0001"; // Default fallback
+      try {
+        const response = await fetch(apiUrl);
+        invoiceNumber = await response.text();
+      } catch (error) {
+        console.error("Error fetching invoice number:", error);
+      }
+
+      // Generate colorful invoice HTML
+      const invoiceHTML = `
+        <div class="invoice">
+          <h2>Invoice</h2>
+          <p><strong>Kasey Cloud</strong></p>
+          <p>1201 N Muldoon Rd</p>
+          <p>Anchorage, Alaska 99504</p>
+          <p><strong>Date:</strong> ${currentDate}</p>
+          <p><strong>Time:</strong> ${currentTime}</p>
+          <p><strong>Invoice Number:</strong> ${invoiceNumber}</p>
+          <hr>
+          <p><strong>Player Name:</strong> ${playerName}</p>
+          <p><strong>Cashout From:</strong> ${cashoutFrom}</p>
+          <div>
+            <p><strong>VAT (${vat}%):</strong></p>
+            <p>$${vatAmount.toFixed(2)}</p>
+          </div>
+          <div>
+            <p><strong>Amount:</strong></p>
+            <p>$${amount.toFixed(2)}</p>
+          </div>
+          <hr>
+          <p class="total"><strong>Total Amount:</strong> $${totalAmount.toFixed(2)}</p>
+          <hr>
+          <p><strong>Remarks:</strong> Paid Successfully</p>
+        </div>
+      `;
+
+      // Display the invoice
+      document.getElementById('invoiceOutput').innerHTML = invoiceHTML;
+
+      // Hide loading text and show the "Download Image" button
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('downloadImage').style.display = 'block';
+    });
+
+    // Add event listener to the "Download Image" button
+    document.getElementById('downloadImage').addEventListener('click', generateImage);
+
+    function generateImage() {
+      const element = document.getElementById('invoiceOutput');
+
+      html2canvas(element, {
+        scale: 2, // High resolution for better quality
+        logging: false,
+        useCORS: true,
+        allowTaint: false,
+      }).then((canvas) => {
+        const imageUrl = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.href = imageUrl;
+        link.download = 'invoice.png';  // Set the name of the image file
+
+        // Trigger the download
+        link.click();
+      });
+    }
+
+    // Function to format the date using U.S. local format (MM/DD/YYYY)
+    function formatDateAmerican(date) {
+      return date.toLocaleDateString('en-US');
+    }
+
+    // Function to format the time to 12-hour format with AM/PM
+    function formatTimeAmerican(date) {
+      let hours = date.getHours();
+      let minutes = date.getMinutes();
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      hours = hours ? hours : 12; // Hour '0' should be '12'
+      minutes = minutes < 10 ? '0' + minutes : minutes;
+      return `${hours}:${minutes} ${ampm}`;
+    }
+  </script>
+
+</body>
+</html>
