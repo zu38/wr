@@ -28,6 +28,7 @@
       border-radius: 10px;
       width: 100%;
       max-width: 600px;
+      box-sizing: border-box;
     }
     .form-group {
       margin-bottom: 15px;
@@ -50,6 +51,7 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
+      width: 100%;
     }
     button:hover {
       background-color: #e53d28;
@@ -61,6 +63,9 @@
       border-radius: 10px;
       color: #fff;
       display: none;
+      width: 100%;
+      max-width: 600px;
+      box-sizing: border-box;
     }
     #downloadImage {
       display: none;
@@ -71,6 +76,7 @@
       color: white;
       font-size: 18px;
       cursor: pointer;
+      width: 100%;
     }
     #loading {
       display: none;
@@ -79,6 +85,46 @@
       font-weight: bold;
       margin-top: 10px;
     }
+
+    /* Media Queries for Responsiveness */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2em;
+      }
+      .invoice-form {
+        padding: 20px;
+      }
+      button {
+        padding: 12px 25px;
+        font-size: 16px;
+      }
+      #downloadImage {
+        padding: 12px 25px;
+        font-size: 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.5em;
+      }
+      .invoice-form {
+        padding: 15px;
+      }
+      input {
+        padding: 12px;
+        font-size: 14px;
+      }
+      button {
+        padding: 12px 20px;
+        font-size: 14px;
+      }
+      #downloadImage {
+        padding: 12px 20px;
+        font-size: 14px;
+      }
+    }
+
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Impact&display=swap" rel="stylesheet">
 </head>
