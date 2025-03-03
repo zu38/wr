@@ -130,7 +130,6 @@
         font-size: 14px;
       }
     }
-
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Impact&display=swap" rel="stylesheet">
 </head>
@@ -160,11 +159,8 @@
   <div id="invoiceOutput"></div>
   <button id="downloadImage">Download Image</button>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script>
-    // Replace this URL with your new Google Apps Script URL
-    const apiUrl = "https://script.google.com/macros/s/AKfycbxIg4Bt0TLvFwa1UD2z6V6eT1pVjYrie7qOXYAQVJllBhswrB_qmP3455Kw2Ei926PD/exec"; 
-
     document.getElementById('invoiceForm').addEventListener('submit', async function (e) {
       e.preventDefault();
 
@@ -186,25 +182,16 @@
       const currentDate = formatDateAmerican(new Date());
       const currentTime = formatTimeAmerican(new Date());
 
-      // Fetch the next invoice number from Google Sheets
-      let invoiceNumber = "INV-0001"; // Default fallback
-      try {
-        const response = await fetch(apiUrl);
-        invoiceNumber = await response.text();
-      } catch (error) {
-        console.error("Error fetching invoice number:", error);
-      }
-
-      // Generate colorful invoice HTML
+      // Generate invoice HTML
       const invoiceHTML = `
-        <div class="invoice">
+        <div class="invoice" id="invoiceContent">
           <h2>Invoice</h2>
           <p><strong>Kasey Cloud</strong></p>
           <p>1201 N Muldoon Rd</p>
           <p>Anchorage, Alaska 99504</p>
           <p><strong>Date:</strong> ${currentDate}</p>
           <p><strong>Time:</strong> ${currentTime}</p>
-          <p><strong>Invoice Number:</strong> ${invoiceNumber}</p>
+          <p><strong>Invoice Number:</strong> INV-0001</p>
           <hr>
           <p><strong>Player Name:</strong> ${playerName}</p>
           <p><strong>Cashout From:</strong> ${cashoutFrom}</p>
@@ -267,6 +254,5 @@
       return `${hours}:${minutes} ${ampm}`;
     }
   </script>
-
 </body>
 </html>
