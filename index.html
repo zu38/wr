@@ -256,13 +256,13 @@
         useCORS: true,
         allowTaint: false,
       }).then((canvas) => {
-        const imageUrl = canvas.toDataURL('image/png');
-        const link = document.createElement('a');
-        link.href = imageUrl;
-        link.download = 'invoice.png';  // Set the name of the image file
-
-        // Force the download to happen
-        link.click();
+        const imageUrl = canvas.toDataURL('image/png'); // Image source
+        const link = document.createElement('a');      // Create an anchor tag
+        link.href = imageUrl;                          // Set the href to the image
+        link.download = 'invoice.png';                 // Name the file
+        document.body.appendChild(link);               // Append the link to the body
+        link.click();                                  // Simulate the click to trigger download
+        document.body.removeChild(link);               // Remove the link after download
       });
     });
 
