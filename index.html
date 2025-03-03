@@ -5,10 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Invoice Generator</title>
   <style>
-    /* General Body Styles */
     body {
       font-family: 'Impact', sans-serif;
-      background: linear-gradient(45deg, #6a5acd, #ff6347); /* Beautiful gradient background */
+      background: linear-gradient(45deg, #6a5acd, #ff6347);
       margin: 0;
       padding: 0;
       height: 100vh;
@@ -18,52 +17,31 @@
       align-items: center;
       color: #fff;
     }
-
     h1 {
       font-size: 3em;
       text-align: center;
-      color: #fff;
       margin-bottom: 20px;
-      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
     }
-
-    /* Form Styling */
     .invoice-form {
       background-color: rgba(0, 0, 0, 0.6);
       padding: 30px;
       border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
       width: 100%;
       max-width: 600px;
     }
-
     .form-group {
       margin-bottom: 15px;
     }
-
-    label {
-      font-size: 18px;
-      display: block;
-      margin-bottom: 5px;
-    }
-
     input {
       width: 100%;
       padding: 10px;
       font-size: 16px;
-      border-radius: 8px;
-      border: 2px solid #ddd;
       margin-bottom: 15px;
+      border-radius: 8px;
       outline: none;
       background-color: #f8f8f8;
       color: #333;
     }
-
-    input:focus {
-      border-color: #4caf50;
-    }
-
-    /* Buttons Styling */
     button {
       background-color: #ff6347;
       color: white;
@@ -72,49 +50,18 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      transition: all 0.3s ease;
     }
-
     button:hover {
       background-color: #e53d28;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
     }
-
-    button:active {
-      transform: scale(0.98);
-    }
-
-    /* Invoice Output Styling */
     .invoice {
       margin-top: 30px;
       padding: 20px;
       background: rgba(0, 0, 0, 0.8);
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-      width: 100%;
-      max-width: 600px;
       color: #fff;
+      display: none;
     }
-
-    .invoice h2 {
-      text-align: center;
-      font-size: 2.5em;
-      color: #4caf50;
-    }
-
-    .invoice p {
-      font-size: 16px;
-      margin-bottom: 10px;
-    }
-
-    .invoice .total {
-      font-size: 18px;
-      font-weight: bold;
-      text-align: right;
-    }
-
-    /* Download Image Button */
     #downloadImage {
       display: none;
       margin-top: 20px;
@@ -124,20 +71,7 @@
       color: white;
       font-size: 18px;
       cursor: pointer;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      transition: all 0.3s ease;
     }
-
-    #downloadImage:hover {
-      background-color: #388e3c;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-    }
-
-    #downloadImage:active {
-      transform: scale(0.98);
-    }
-
-    /* Loading Animation */
     #loading {
       display: none;
       color: #ff6347;
@@ -145,7 +79,6 @@
       font-weight: bold;
       margin-top: 10px;
     }
-
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Impact&display=swap" rel="stylesheet">
 </head>
