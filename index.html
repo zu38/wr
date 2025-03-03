@@ -3,152 +3,220 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Invoice Generator</title>
+  <title>Ultimate Invoice Generator</title>
   <style>
-    /* Add your CSS here */
+    body {
+      font-family: 'Impact', sans-serif;
+      background: linear-gradient(45deg, #6a5acd, #ff6347);
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      color: #fff;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.5em;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      margin-bottom: 30px;
+    }
+
+    .invoice-form {
+      background: rgba(0,0,0,0.7);
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 1.1em;
+      color: #ffd700;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: 2px solid #4a90e2;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.9);
+      color: #333;
+    }
+
+    button {
+      background: linear-gradient(45deg, #4CAF50, #45a049);
+      color: white;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 18px;
+      transition: transform 0.3s ease;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(76,175,80,0.4);
+    }
+
+    #invoiceOutput {
+      margin-top: 30px;
+      background: rgba(0,0,0,0.8);
+      padding: 25px;
+      border-radius: 15px;
+      display: none;
+    }
+
+    .invoice {
+      color: #fff;
+    }
+
+    .invoice h2 {
+      color: #4CAF50;
+      border-bottom: 2px solid #4CAF50;
+      padding-bottom: 10px;
+    }
+
+    #downloadImage {
+      margin-top: 20px;
+      background: linear-gradient(45deg, #2196F3, #1976D2);
+      display: none;
+    }
+
+    #loading {
+      display: none;
+      text-align: center;
+      font-size: 1.2em;
+      color: #FFC107;
+      margin: 20px 0;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 10px;
+      }
+      
+      h1 {
+        font-size: 2em;
+      }
+      
+      .invoice-form {
+        padding: 15px;
+      }
+    }
   </style>
+  <link href="https://fonts.googleapis.com/css2?family=Impact&display=swap" rel="stylesheet">
 </head>
 <body>
-  <h1>Invoice Generator</h1>
-  <div class="invoice-form">
-    <form id="invoiceForm">
-      <div class="form-group">
-        <label for="playerName">Player Name</label>
-        <input type="text" id="playerName" required>
-      </div>
-      <div class="form-group">
-        <label for="cashoutFrom">Cashout From</label>
-        <input type="text" id="cashoutFrom" required>
-      </div>
-      <div class="form-group">
-        <label for="amount">Amount</label>
-        <input type="number" id="amount" required>
-      </div>
-      <button type="submit">Generate Invoice</button>
-    </form>
-  </div>
+  <div class="container">
+    <h1>🎰 Casino Cashout Invoice 🎲</h1>
+    
+    <div class="invoice-form">
+      <form id="invoiceForm">
+        <div class="form-group">
+          <label for="playerName">🎯 Player Name</label>
+          <input type="text" id="playerName" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="cashoutFrom">💸 Cashout From</label>
+          <input type="text" id="cashoutFrom" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="amount">💰 Amount</label>
+          <input type="number" id="amount" step="0.01" required>
+        </div>
+        
+        <button type="submit">🔄 Generate Invoice</button>
+      </form>
+    </div>
 
-  <div id="loading">Generating invoice...</div>
-  <div id="invoiceOutput"></div>
-  <button id="downloadImage">Download Image</button>
+    <div id="loading">🎰 Generating Your Invoice...</div>
+    
+    <div id="invoiceOutput"></div>
+    <button id="downloadImage">📸 Download Invoice Image</button>
+  </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script>
-    // Google Apps Script URL
-    const apiUrl = "https://script.google.com/macros/s/AKfycbxIg4Bt0TLvFwa1UD2z6V6eT1pVjYrie7qOXYAQVJllBhswrB_qmP3455Kw2Ei926PD/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbxIg4Bt0TLvFwa1UD2z6V6eT1pVjYrie7qOXYAQVJllBhswrB_qmP3455Kw2Ei926PD/exec";
 
-    document.getElementById('invoiceForm').addEventListener('submit', async function (e) {
+    document.getElementById('invoiceForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-
-      // Show loading text
+      
+      // Show loading
       document.getElementById('loading').style.display = 'block';
       document.getElementById('downloadImage').style.display = 'none';
-
+      
       // Get form values
-      const playerName = document.getElementById('playerName').value;
-      const cashoutFrom = document.getElementById('cashoutFrom').value;
-      const amount = parseFloat(document.getElementById('amount').value);
+      const formData = {
+        playerName: document.getElementById('playerName').value,
+        cashoutFrom: document.getElementById('cashoutFrom').value,
+        amount: parseFloat(document.getElementById('amount').value)
+      };
 
-      // Set VAT to 0%
-      const vat = 0;
-      const vatAmount = (amount * vat) / 100;
-      const totalAmount = amount + vatAmount;
-
-      // Get current date and time in U.S. locale format (MM/DD/YYYY, HH:MM AM/PM)
-      const currentDate = formatDateAmerican(new Date());
-      const currentTime = formatTimeAmerican(new Date());
-
-      // Fetch the next invoice number from Google Apps Script
-      let invoiceNumber = "INV-0001"; // Default fallback
+      // Get invoice number
+      let invoiceNumber = 'INV-0000';
       try {
-        const response = await fetch(apiUrl);
+        const response = await fetch(API_URL);
         invoiceNumber = await response.text();
       } catch (error) {
-        console.error("Error fetching invoice number:", error);
+        console.error('Error fetching invoice number:', error);
       }
 
-      // Generate colorful invoice HTML
+      // Generate invoice HTML
       const invoiceHTML = `
-        <div class="invoice" id="invoiceContent">
-          <h2>Invoice</h2>
-          <p><strong>Kasey Cloud</strong></p>
-          <p>1201 N Muldoon Rd</p>
-          <p>Anchorage, Alaska 99504</p>
-          <p><strong>Date:</strong> ${currentDate}</p>
-          <p><strong>Time:</strong> ${currentTime}</p>
-          <p><strong>Invoice Number:</strong> ${invoiceNumber}</p>
+        <div class="invoice">
+          <h2>🎉 Cashout Receipt</h2>
+          <p><strong>🏦 Casino Name:</strong> Vegas Nights 🎰</p>
+          <p><strong>📅 Date:</strong> ${new Date().toLocaleDateString()}</p>
+          <p><strong>⏰ Time:</strong> ${new Date().toLocaleTimeString()}</p>
+          <p><strong>📜 Invoice No:</strong> ${invoiceNumber}</p>
           <hr>
-          <p><strong>Player Name:</strong> ${playerName}</p>
-          <p><strong>Cashout From:</strong> ${cashoutFrom}</p>
-          <div>
-            <p><strong>VAT (${vat}%):</strong></p>
-            <p>$${vatAmount.toFixed(2)}</p>
-          </div>
-          <div>
-            <p><strong>Amount:</strong></p>
-            <p>$${amount.toFixed(2)}</p>
-          </div>
+          <p><strong>🎮 Player:</strong> ${formData.playerName}</p>
+          <p><strong>💳 Cashout From:</strong> ${formData.cashoutFrom}</p>
+          <p><strong>💵 Amount:</strong> $${formData.amount.toFixed(2)}</p>
           <hr>
-          <p class="total"><strong>Total Amount:</strong> $${totalAmount.toFixed(2)}</p>
-          <hr>
-          <p><strong>Remarks:</strong> Paid Successfully</p>
+          <p><strong>🎲 Game Type:</strong> Slot Machine</p>
+          <p><strong>✅ Status:</strong> Payment Completed</p>
+          <p><strong>📌 Note:</strong> Thank you for playing!</p>
         </div>
       `;
 
-      // Display the invoice
+      // Display invoice
       document.getElementById('invoiceOutput').innerHTML = invoiceHTML;
-
-      // Hide loading text and show the "Download Image" button
+      document.getElementById('invoiceOutput').style.display = 'block';
+      
+      // Hide loading and show download button
       document.getElementById('loading').style.display = 'none';
       document.getElementById('downloadImage').style.display = 'block';
     });
 
-    // Add event listener to the "Download Image" button
-    document.getElementById('downloadImage').addEventListener('click', function () {
-      const element = document.getElementById('invoiceOutput');
-
-      // Add a small delay to ensure the content is fully rendered
-      setTimeout(() => {
-        html2canvas(element, {
-          scale: 2, // High resolution for better quality
-          logging: true, // Enable logging for debugging
-          useCORS: true, // Enable cross-origin images (if any)
-          allowTaint: false, // Prevent tainting the canvas
-        }).then((canvas) => {
-          console.log("Canvas generated:", canvas); // Debugging
-
-          // Convert the canvas to an image URL
-          const imageUrl = canvas.toDataURL('image/png');
-          console.log("Image URL:", imageUrl); // Debugging
-
-          // Create a temporary link element to trigger the download
-          const link = document.createElement('a');
-          link.href = imageUrl;
-          link.download = 'invoice.png'; // Name the file
-          document.body.appendChild(link); // Append the link to the body
-          link.click(); // Simulate the click to trigger download
-          document.body.removeChild(link); // Remove the link after download
-        }).catch((error) => {
-          console.error("Error generating canvas:", error); // Debugging
-        });
-      }, 500); // 500ms delay
+    // Download functionality
+    document.getElementById('downloadImage').addEventListener('click', () => {
+      html2canvas(document.getElementById('invoiceOutput'), {
+        scale: 2,
+        useCORS: true,
+        logging: true
+      }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `casino-invoice-${Date.now()}.png`;
+        link.href = canvas.toDataURL();
+        link.click();
+      });
     });
-
-    // Function to format the date using U.S. local format (MM/DD/YYYY)
-    function formatDateAmerican(date) {
-      return date.toLocaleDateString('en-US');
-    }
-
-    // Function to format the time to 12-hour format with AM/PM
-    function formatTimeAmerican(date) {
-      let hours = date.getHours();
-      let minutes = date.getMinutes();
-      const ampm = hours >= 12 ? 'PM' : 'AM';
-      hours = hours % 12;
-      hours = hours ? hours : 12; // Hour '0' should be '12'
-      minutes = minutes < 10 ? '0' + minutes : minutes;
-      return `${hours}:${minutes} ${ampm}`;
-    }
   </script>
 </body>
 </html>
