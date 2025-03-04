@@ -271,8 +271,7 @@
             <div>
               <p><strong>Invoice Number:</strong> ${invoiceNumber}</p>
               <p><strong>Invoice Date:</strong> ${new Date().toLocaleDateString()}</p>
-              <p><strong>Due Date:</strong> ${new Date(new Date().setDate(new Date().getDate() + 7)).toLocaleDateString()}</p>
-            </div>
+              </div>
             <div>
               <p><strong>Bill To:</strong></p>
               <p>${formData.playerName}</p>
@@ -289,7 +288,7 @@
             </thead>
             <tbody>
               <tr>
-                <td>Cashout Service Fee (2%)</td>
+                <td>Cashout Service Fee (0%)</td>
                 <td>$${serviceFee.toFixed(2)}</td>
               </tr>
               <tr>
@@ -301,7 +300,7 @@
                 <td>$${totalAmount.toFixed(2)}</td>
               </tr>
               <tr>
-                <td>Tax (0% Alaska State Tax)</td>
+                <td>Tax (0%)</td>
                 <td>$0.00</td>
               </tr>
               <tr class="total-row">
@@ -311,16 +310,11 @@
             </tbody>
           </table>
 
-          <div class="payment-instructions">
-            <p><strong>Payment Instructions:</strong></p>
-            <p>• Make checks payable to: Kasey Cloud LLC</p>
-            <p>• Account Number: ${invoiceNumber}</p>
-            <p>• Due Date: ${new Date(new Date().setDate(new Date().getDate() + 7)).toLocaleDateString()}</p>
-          </div>
+          
 
           <div class="footer-note">
             <p>Thank you for your business! • Transaction ID: ${Math.random().toString(36).substr(2, 8).toUpperCase()}</p>
-            <p>All payments due within 7 business days</p>
+            
           </div>
         </div>
       `;
