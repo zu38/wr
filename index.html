@@ -6,7 +6,7 @@
   <title>Kasey Cloud Cashout</title>
   <style>
     body {
-      font-family: 'Impact', sans-serif;
+      font-family: 'Arial', sans-serif;
       background: linear-gradient(45deg, #1a237e, #4a148c);
       margin: 0;
       padding: 20px;
@@ -22,9 +22,9 @@
     h1 {
       text-align: center;
       font-size: 2.5em;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
       margin-bottom: 30px;
       color: #00bcd4;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
     }
 
     .player-name-mobile {
@@ -36,7 +36,6 @@
       padding: 25px;
       border-radius: 15px;
       box-shadow: 0 0 20px rgba(0,0,0,0.3);
-      position: relative;
     }
 
     .form-group {
@@ -80,20 +79,67 @@
 
     #invoiceOutput {
       margin-top: 30px;
-      background: rgba(0,0,0,0.8);
-      padding: 25px;
-      border-radius: 15px;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
       display: none;
+      color: #333;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
     }
 
-    .invoice {
-      color: #fff;
-    }
-
-    .invoice h2 {
-      color: #00bcd4;
+    .invoice-header {
+      text-align: center;
       border-bottom: 2px solid #00bcd4;
-      padding-bottom: 10px;
+      padding-bottom: 20px;
+      margin-bottom: 25px;
+    }
+
+    .invoice-header h2 {
+      color: #1a237e;
+      margin: 0 0 10px 0;
+    }
+
+    .invoice-details {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 30px;
+    }
+
+    .invoice-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+
+    .invoice-table th {
+      background: #00bcd4;
+      color: white;
+      padding: 12px;
+      text-align: left;
+    }
+
+    .invoice-table td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .total-row {
+      background-color: #f8f9fa;
+      font-weight: bold;
+    }
+
+    .payment-instructions {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 25px;
+    }
+
+    .footer-note {
+      text-align: center;
+      margin-top: 25px;
+      color: #666;
+      font-size: 0.9em;
     }
 
     #downloadImage {
@@ -132,19 +178,18 @@
         margin-bottom: 15px;
       }
 
-      .invoice-form {
-        overflow: visible;
+      .invoice-details {
+        flex-direction: column;
       }
     }
   </style>
-  <link href="https://fonts.googleapis.com/css2?family=Impact&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="container">
     <h1>☁️ Kasey Cloud Cashout</h1>
     
     <div class="invoice-form">
-      <!-- Mobile Player Name Input (now properly inside form container) -->
       <div class="player-name-mobile">
         <div class="form-group">
           <label for="playerNameMobile">🎯 Player Name</label>
@@ -153,7 +198,6 @@
       </div>
 
       <form id="invoiceForm">
-        <!-- Desktop Player Name Input -->
         <div class="player-name-desktop">
           <div class="form-group">
             <label for="playerName">🎯 Player Name</label>
@@ -185,7 +229,6 @@
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbxIg4Bt0TLvFwa1UD2z6V6eT1pVjYrie7qOXYAQVJllBhswrB_qmP3455Kw2Ei926PD/exec";
 
-    // Sync mobile/desktop player name fields
     const syncPlayerNames = () => {
       const desktopName = document.getElementById('playerName');
       const mobileName = document.getElementById('playerNameMobile');
@@ -196,18 +239,15 @@
     document.getElementById('invoiceForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       
-      // Show loading
       document.getElementById('loading').style.display = 'block';
       document.getElementById('downloadImage').style.display = 'none';
       
-      // Get form values
       const formData = {
         playerName: document.getElementById('playerName').value || document.getElementById('playerNameMobile').value,
         cashoutFrom: document.getElementById('cashoutFrom').value,
         amount: parseFloat(document.getElementById('amount').value)
       };
 
-      // Get invoice number
       let invoiceNumber = 'KC-0000';
       try {
         const response = await fetch(API_URL);
@@ -216,35 +256,82 @@
         console.error('Error fetching invoice number:', error);
       }
 
-      // Generate invoice HTML
+      const serviceFee = formData.amount * 0.02;
+      const totalAmount = formData.amount + serviceFee;
+
       const invoiceHTML = `
         <div class="invoice">
-          <h2>☁️ Jackpot Journey Receipt</h2>
-          <p><strong>🏢 Service Center:</strong> Cloud Cashout Hub</p>
-          <p><strong>📅 Date:</strong> ${new Date().toLocaleDateString()}</p>
-          <p><strong>⏰ Time:</strong> ${new Date().toLocaleTimeString()}</p>
-          <p><strong>📜 Transaction ID:</strong> ${invoiceNumber}</p>
-          <hr>
-          <p><strong>👤 Player:</strong> ${formData.playerName}</p>
-          <p><strong>💳 Cashout Source:</strong> ${formData.cashoutFrom}</p>
-          <p><strong>💵 Amount:</strong> $${formData.amount.toFixed(2)}</p>
-          <hr>
-          <p><strong>🔐 Security Code:</strong> ${Math.random().toString(36).substr(2, 8).toUpperCase()}</p>
-          <p><strong>✅ Status:</strong> Transaction Verified</p>
-          <p><strong>📌 Note:</strong> Thank you for using Kasey Cloud!</p>
+          <div class="invoice-header">
+            <h2>Kasey Cloud LLC</h2>
+            <p>1536 Stellar Dr, Kenai, Alaska 99611</p>
+            <p>Phone: (907) 555-0192 | Email: billing@kaseycloud.com</p>
+          </div>
+
+          <div class="invoice-details">
+            <div>
+              <p><strong>Invoice Number:</strong> ${invoiceNumber}</p>
+              <p><strong>Invoice Date:</strong> ${new Date().toLocaleDateString()}</p>
+              <p><strong>Due Date:</strong> ${new Date(new Date().setDate(new Date().getDate() + 7)).toLocaleDateString()}</p>
+            </div>
+            <div>
+              <p><strong>Bill To:</strong></p>
+              <p>${formData.playerName}</p>
+              <p>${formData.cashoutFrom}</p>
+            </div>
+          </div>
+
+          <table class="invoice-table">
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Cashout Service Fee (2%)</td>
+                <td>$${serviceFee.toFixed(2)}</td>
+              </tr>
+              <tr>
+                <td>Funds Transfer - ${formData.cashoutFrom}</td>
+                <td>$${formData.amount.toFixed(2)}</td>
+              </tr>
+              <tr class="total-row">
+                <td>Subtotal</td>
+                <td>$${totalAmount.toFixed(2)}</td>
+              </tr>
+              <tr>
+                <td>Tax (0% Alaska State Tax)</td>
+                <td>$0.00</td>
+              </tr>
+              <tr class="total-row">
+                <td><strong>Total Due</strong></td>
+                <td><strong>$${totalAmount.toFixed(2)}</strong></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="payment-instructions">
+            <p><strong>Payment Instructions:</strong></p>
+            <p>• Make checks payable to: Kasey Cloud LLC</p>
+            <p>• Account Number: ${invoiceNumber}</p>
+            <p>• Due Date: ${new Date(new Date().setDate(new Date().getDate() + 7)).toLocaleDateString()}</p>
+          </div>
+
+          <div class="footer-note">
+            <p>Thank you for your business! • Transaction ID: ${Math.random().toString(36).substr(2, 8).toUpperCase()}</p>
+            <p>All payments due within 7 business days</p>
+          </div>
         </div>
       `;
 
-      // Display invoice
       document.getElementById('invoiceOutput').innerHTML = invoiceHTML;
       document.getElementById('invoiceOutput').style.display = 'block';
       
-      // Hide loading and show download button
       document.getElementById('loading').style.display = 'none';
       document.getElementById('downloadImage').style.display = 'block';
     });
 
-    // Download functionality
     document.getElementById('downloadImage').addEventListener('click', () => {
       html2canvas(document.getElementById('invoiceOutput'), {
         scale: 2,
@@ -252,13 +339,12 @@
         logging: true
       }).then(canvas => {
         const link = document.createElement('a');
-        link.download = `kasey-cloud-receipt-${Date.now()}.png`;
+        link.download = `Kasey-Cloud-Invoice-${Date.now()}.png`;
         link.href = canvas.toDataURL();
         link.click();
       });
     });
 
-    // Initialize field synchronization
     syncPlayerNames();
   </script>
 </body>
