@@ -3,39 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kasey Cloud Cashout</title>
+  <title>Professional Receipt Generator</title>
   <style>
     body {
-      font-family: 'Arial', sans-serif;
-      background: linear-gradient(45deg, #1a237e, #4a148c);
+      font-family: 'Roboto', sans-serif;
+      background: #f0f2f5;
       margin: 0;
-      padding: 20px;
+      padding: 30px;
       min-height: 100vh;
-      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .container {
       max-width: 800px;
-      margin: 0 auto;
+      width: 100%;
     }
 
     h1 {
       text-align: center;
-      font-size: 2.5em;
-      margin-bottom: 30px;
-      color: #00bcd4;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    }
-
-    .player-name-mobile {
-      display: none;
+      color: #1a237e;
+      margin-bottom: 40px;
+      font-size: 2em;
     }
 
     .invoice-form {
-      background: rgba(0,0,0,0.7);
+      background: white;
       padding: 25px;
-      border-radius: 15px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 25px;
     }
 
     .form-group {
@@ -45,237 +43,208 @@
     label {
       display: block;
       margin-bottom: 8px;
-      font-size: 1.1em;
-      color: #00bcd4;
+      color: #444;
+      font-weight: 500;
     }
 
     input {
       width: 100%;
-      padding: 12px;
-      font-size: 16px;
-      border: 2px solid #00bcd4;
-      border-radius: 8px;
-      background: rgba(255,255,255,0.9);
-      color: #333;
-      box-sizing: border-box;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 15px;
     }
 
     button {
-      background: linear-gradient(45deg, #00bcd4, #0097a7);
+      background: #2196F3;
       color: white;
-      padding: 15px 30px;
+      padding: 12px 25px;
       border: none;
-      border-radius: 8px;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 18px;
-      transition: transform 0.3s ease;
+      font-size: 15px;
       width: 100%;
+      transition: background 0.3s;
     }
 
     button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 15px rgba(0,188,212,0.4);
+      background: #1976D2;
     }
 
     #invoiceOutput {
-      margin-top: 30px;
       background: white;
-      padding: 30px;
-      border-radius: 10px;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
       display: none;
-      color: #333;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      max-width: 600px;
+      width: 100%;
+      margin: 20px auto;
+      box-sizing: border-box;
     }
 
-    .invoice-header {
+    .receipt-header {
       text-align: center;
-      border-bottom: 2px solid #00bcd4;
-      padding-bottom: 20px;
-      margin-bottom: 25px;
-    }
-
-    .invoice-header h2 {
-      color: #1a237e;
-      margin: 0 0 10px 0;
-    }
-
-    .invoice-details {
-      display: flex;
-      justify-content: space-between;
       margin-bottom: 30px;
     }
 
-    .invoice-table {
+    .receipt-header h2 {
+      color: #1a237e;
+      margin: 0 0 10px 0;
+      font-size: 1.8em;
+    }
+
+    .address-block {
+      color: #1976d2;
+      line-height: 1.5;
+      font-size: 0.9em;
+      margin-bottom: 15px;
+    }
+
+    .receipt-body {
+      border: 2px solid #e3f2fd;
+      border-radius: 6px;
+      padding: 25px;
+      margin: 20px 0;
+      background: #f8fbff;
+    }
+
+    .receipt-details {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 25px;
+    }
+
+    .detail-column p {
+      margin: 8px 0;
+      color: #444;
+    }
+
+    .receipt-table {
       width: 100%;
       border-collapse: collapse;
       margin: 20px 0;
     }
 
-    .invoice-table th {
-      background: #00bcd4;
-      color: white;
+    .receipt-table th {
+      background: #e3f2fd;
+      color: #1a237e;
       padding: 12px;
       text-align: left;
+      border-bottom: 2px solid #90caf9;
     }
 
-    .invoice-table td {
+    .receipt-table td {
       padding: 12px;
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid #eee;
     }
 
-    .total-row {
+    .total-row td {
       font-weight: bold;
-    }
-
-    .payment-instructions {
-      background: #f8f9fa;
-      padding: 15px;
-      border-radius: 8px;
-      margin-top: 25px;
-      text-align: center;
+      background: #f0f4ff;
     }
 
     .footer-note {
       text-align: center;
-      margin-top: 25px;
       color: #666;
-      font-size: 0.9em;
+      font-size: 0.85em;
+      margin-top: 30px;
     }
 
     #downloadImage {
-      margin-top: 20px;
-      background: linear-gradient(45deg, #00bcd4, #0097a7);
-      display: none;
+      margin: 20px auto;
+      display: block;
+      width: auto;
     }
 
     #loading {
-      display: none;
       text-align: center;
-      font-size: 1.2em;
-      color: #00bcd4;
-      margin: 20px 0;
-    }
-
-    @media (max-width: 768px) {
-      .container {
-        padding: 10px;
-      }
-      
-      h1 {
-        font-size: 2em;
-      }
-      
-      .invoice-form {
-        padding: 15px;
-      }
-
-      .player-name-desktop {
-        display: none;
-      }
-
-      .player-name-mobile {
-        display: block;
-        margin-bottom: 15px;
-      }
-
-      .invoice-details {
-        flex-direction: column;
-      }
+      color: #2196F3;
+      display: none;
     }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="container">
-    <h1>☁️ Kasey Cloud Cashout</h1>
+    <h1>Professional Receipt Generator</h1>
     
     <div class="invoice-form">
-      <div class="player-name-mobile">
-        <div class="form-group">
-          <label for="playerNameMobile">🎯 Player Name</label>
-          <input type="text" id="playerNameMobile" required>
-        </div>
-      </div>
-
       <form id="invoiceForm">
-        <div class="player-name-desktop">
-          <div class="form-group">
-            <label for="playerName">🎯 Player Name</label>
-            <input type="text" id="playerName" required>
-          </div>
+        <div class="form-group">
+          <label for="platformName">Platform Name</label>
+          <input type="text" id="platformName" required>
         </div>
         
         <div class="form-group">
-          <label for="cashoutFrom">💸 Cashout From</label>
-          <input type="text" id="cashoutFrom" required>
+          <label for="playerName">Player's Name</label>
+          <input type="text" id="playerName" required>
         </div>
         
         <div class="form-group">
-          <label for="amount">💰 Amount</label>
+          <label for="playerCashtag">Player's Cashtag</label>
+          <input type="text" id="playerCashtag" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="paidFrom">Paid From</label>
+          <input type="text" id="paidFrom" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="amount">Amount</label>
           <input type="number" id="amount" step="0.01" required>
         </div>
         
-        <button type="submit">🔄 Generate Invoice</button>
+        <button type="submit">Generate Receipt</button>
       </form>
     </div>
 
-    <div id="loading">☁️ Processing Your Cashout...</div>
+    <div id="loading">Generating Receipt...</div>
     
     <div id="invoiceOutput"></div>
-    <button id="downloadImage">📸 Download Receipt</button>
+    <button id="downloadImage">Download Receipt</button>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbxIg4Bt0TLvFwa1UD2z6V6eT1pVjYrie7qOXYAQVJllBhswrB_qmP3455Kw2Ei926PD/exec";
-
-    const syncPlayerNames = () => {
-      const desktopName = document.getElementById('playerName');
-      const mobileName = document.getElementById('playerNameMobile');
-      desktopName.addEventListener('input', () => mobileName.value = desktopName.value);
-      mobileName.addEventListener('input', () => desktopName.value = mobileName.value);
-    };
-
-    document.getElementById('invoiceForm').addEventListener('submit', async (e) => {
+    document.getElementById('invoiceForm').addEventListener('submit', (e) => {
       e.preventDefault();
       
       document.getElementById('loading').style.display = 'block';
       document.getElementById('downloadImage').style.display = 'none';
       
       const formData = {
-        playerName: document.getElementById('playerName').value || document.getElementById('playerNameMobile').value,
-        cashoutFrom: document.getElementById('cashoutFrom').value,
+        platformName: document.getElementById('platformName').value,
+        playerName: document.getElementById('playerName').value,
+        playerCashtag: document.getElementById('playerCashtag').value,
+        paidFrom: document.getElementById('paidFrom').value,
         amount: parseFloat(document.getElementById('amount').value)
       };
 
-      let invoiceNumber = 'KC-0000';
-      try {
-        const response = await fetch(API_URL);
-        invoiceNumber = await response.text();
-      } catch (error) {
-        console.error('Error fetching invoice number:', error);
-      }
-
-      const invoiceHTML = `
-        <div class="invoice">
-          <div class="invoice-header">
-            <h2>Kasey Cloud LLC</h2>
-            <p>1536 Stellar Dr, Kenai, Alaska 99611</p>
+      const receiptHTML = `
+        <div class="receipt-header">
+          <h2>${formData.platformName}</h2>
+          <div class="address-block">
+            470 Prospect Ave #104<br>
+            West Orange, New Jersey 07052
           </div>
+        </div>
 
-          <div class="invoice-details">
+        <div class="receipt-body">
+          <div class="receipt-details">
             <div>
-              <p><strong>Invoice Number:</strong> ${invoiceNumber}</p>
               <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+              <p><strong>Receipt ID:</strong> ${Math.random().toString(36).substr(2, 8).toUpperCase()}</p>
             </div>
             <div>
-              <p><strong>Player:</strong></p>
+              <p><strong>Recipient:</strong></p>
               <p>${formData.playerName}</p>
-              <p>${formData.cashoutFrom}</p>
+              <p>${formData.playerCashtag}</p>
             </div>
           </div>
 
-          <table class="invoice-table">
+          <table class="receipt-table">
             <thead>
               <tr>
                 <th>Description</th>
@@ -284,27 +253,24 @@
             </thead>
             <tbody>
               <tr>
-                <td>Cashout from ${formData.cashoutFrom}</td>
+                <td>Payment from ${formData.paidFrom}</td>
                 <td>$${formData.amount.toFixed(2)}</td>
               </tr>
               <tr class="total-row">
-                <td>Total Cashout</td>
-                <td><strong>$${formData.amount.toFixed(2)}</strong></td>
+                <td>Total Amount</td>
+                <td>$${formData.amount.toFixed(2)}</td>
               </tr>
             </tbody>
           </table>
 
-          <div class="payment-instructions">
-            <p><strong>Remarks:</strong> Payment Completed Successfully ✅</p>
-          </div>
-
           <div class="footer-note">
-            <p>Transaction ID: ${Math.random().toString(36).substr(2, 8).toUpperCase()}</p>
+            <p>This receipt is computer generated and requires no signature</p>
+            <p>${formData.platformName} © ${new Date().getFullYear()}</p>
           </div>
         </div>
       `;
 
-      document.getElementById('invoiceOutput').innerHTML = invoiceHTML;
+      document.getElementById('invoiceOutput').innerHTML = receiptHTML;
       document.getElementById('invoiceOutput').style.display = 'block';
       
       document.getElementById('loading').style.display = 'none';
@@ -312,19 +278,24 @@
     });
 
     document.getElementById('downloadImage').addEventListener('click', () => {
-      html2canvas(document.getElementById('invoiceOutput'), {
+      const element = document.getElementById('invoiceOutput');
+      
+      html2canvas(element, {
         scale: 2,
         useCORS: true,
-        logging: true
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: element.scrollWidth,
+        windowHeight: element.scrollHeight,
+        width: element.scrollWidth,
+        height: element.scrollHeight
       }).then(canvas => {
         const link = document.createElement('a');
-        link.download = `Kasey-Cloud-Receipt-${Date.now()}.png`;
+        link.download = `Receipt-${Date.now()}.png`;
         link.href = canvas.toDataURL();
         link.click();
       });
     });
-
-    syncPlayerNames();
   </script>
 </body>
 </html>
