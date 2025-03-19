@@ -2,14 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>Professional Receipt Generator</title>
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       font-family: 'Roboto', sans-serif;
       background: #f0f2f5;
-      margin: 0;
-      padding: 30px;
+      padding: 15px;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -17,27 +22,28 @@
     }
 
     .container {
-      max-width: 800px;
       width: 100%;
+      max-width: 800px;
+      padding: 10px;
     }
 
     h1 {
       text-align: center;
       color: #1a237e;
-      margin-bottom: 40px;
-      font-size: 2em;
+      margin: 20px 0;
+      font-size: 1.8rem;
     }
 
     .invoice-form {
       background: white;
-      padding: 25px;
+      padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      margin-bottom: 25px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
     }
 
     .form-group {
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
 
     label {
@@ -45,26 +51,29 @@
       margin-bottom: 8px;
       color: #444;
       font-weight: 500;
+      font-size: 0.95rem;
     }
 
     input {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       border: 1px solid #ddd;
-      border-radius: 6px;
-      font-size: 15px;
+      border-radius: 8px;
+      font-size: 1rem;
+      -webkit-appearance: none;
     }
 
     button {
       background: #2196F3;
       color: white;
-      padding: 12px 25px;
+      padding: 15px 25px;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
-      font-size: 15px;
+      font-size: 1rem;
       width: 100%;
       transition: background 0.3s;
+      font-weight: 500;
     }
 
     button:hover {
@@ -73,57 +82,59 @@
 
     #invoiceOutput {
       background: white;
-      padding: 40px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       display: none;
-      max-width: 600px;
       width: 100%;
+      max-width: 600px;
       margin: 20px auto;
-      box-sizing: border-box;
     }
 
     .receipt-header {
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
     }
 
     .receipt-header h2 {
       color: #1a237e;
-      margin: 0 0 10px 0;
-      font-size: 1.8em;
+      margin-bottom: 10px;
+      font-size: 1.6rem;
     }
 
     .address-block {
       color: #1976d2;
+      font-size: 0.9rem;
       line-height: 1.5;
-      font-size: 0.9em;
       margin-bottom: 15px;
     }
 
     .receipt-body {
       border: 2px solid #e3f2fd;
-      border-radius: 6px;
-      padding: 25px;
-      margin: 20px 0;
+      border-radius: 8px;
+      padding: 20px;
       background: #f8fbff;
+      margin: 15px 0;
     }
 
     .receipt-details {
       display: flex;
-      justify-content: space-between;
-      margin-bottom: 25px;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 20px;
     }
 
     .detail-column p {
       margin: 8px 0;
       color: #444;
+      font-size: 0.95rem;
     }
 
     .receipt-table {
       width: 100%;
       border-collapse: collapse;
       margin: 20px 0;
+      font-size: 0.95rem;
     }
 
     .receipt-table th {
@@ -140,30 +151,74 @@
     }
 
     .total-row td {
-      font-weight: bold;
       background: #f0f4ff;
+      font-weight: 600;
     }
 
     .footer-note {
       text-align: center;
       color: #666;
-      font-size: 0.85em;
-      margin-top: 30px;
+      font-size: 0.85rem;
+      margin-top: 25px;
     }
 
     #downloadImage {
       margin: 20px auto;
-      display: block;
       width: auto;
+      max-width: 300px;
     }
 
     #loading {
       text-align: center;
       color: #2196F3;
       display: none;
+      margin: 20px 0;
+    }
+
+    @media (min-width: 768px) {
+      body {
+        padding: 30px;
+      }
+
+      h1 {
+        font-size: 2.2rem;
+        margin: 30px 0;
+      }
+
+      .invoice-form {
+        padding: 30px;
+      }
+
+      #invoiceOutput {
+        padding: 40px;
+      }
+
+      .receipt-header h2 {
+        font-size: 2rem;
+      }
+
+      .receipt-details {
+        flex-direction: row;
+        justify-content: space-between;
+      }
+
+      .receipt-table {
+        font-size: 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .receipt-table {
+        display: block;
+        overflow-x: auto;
+      }
+
+      input {
+        font-size: 16px;
+      }
     }
   </style>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="container">
@@ -233,11 +288,11 @@
 
         <div class="receipt-body">
           <div class="receipt-details">
-            <div>
+            <div class="detail-column">
               <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
               <p><strong>Receipt ID:</strong> ${Math.random().toString(36).substr(2, 8).toUpperCase()}</p>
             </div>
-            <div>
+            <div class="detail-column">
               <p><strong>Recipient:</strong></p>
               <p>${formData.playerName}</p>
               <p>${formData.playerCashtag}</p>
@@ -264,7 +319,7 @@
           </table>
 
           <div class="footer-note">
-            <p>This receipt is computer generated and requires no signature</p>
+            <p>This receipt is computer generated and valid without signature</p>
             <p>${formData.platformName} © ${new Date().getFullYear()}</p>
           </div>
         </div>
